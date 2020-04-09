@@ -2,8 +2,8 @@ let gameScene = new Phaser.Scene('Zelda');
 
 var config = {
 	type: Phaser.AUTO,
-	width: 1024 ,
-	height: 728,
+	width: 800 ,
+	height: 600,
 	scene: gameScene,
 	physics: {
         default: 'arcade',
@@ -36,6 +36,7 @@ function init(){
 	this.donnee = 3;
 	var boomText;
 	var donneeText;
+	var vieJoueur = 3;
 
 }
 function preload(){
@@ -98,8 +99,12 @@ function create(){
 	
 	function hitmonster (player, monster){
 		
-		this.physics.pause();
-		player.setTint(0xff0000);
+		vieJoueur = vieJoueur - 1;
+		
+		if (vieJoueur = 0) {
+			this.physics.pause();
+			player.setTint(0xff0000);
+		}
 	};
 	
 	
