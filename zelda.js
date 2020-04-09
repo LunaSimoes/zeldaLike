@@ -1,12 +1,15 @@
+let gameScene = new Phaser.Scene('Zelda');
+
 var config = {
 	type: Phaser.AUTO,
 	width: 1024 ,
 	height: 728,
+	scene: gameScene,
 	physics: {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: true
+            debug: false
         }
     },
 	scene: {
@@ -24,71 +27,127 @@ function init(){
 	var platforms;
 	var player;
 	var stars;
-	var fantome;
+	var monster;
+	var cursor;
+	var touch;
+	var bombs;
+	var gameOver = false;
+	this.boom = 0;
+	this.donnee = 3;
+	var boomText;
+	var donneeText;
+
 }
 function preload(){
-	this.load.image('background','assets/fondpong.png');	
-	this.load.image('sol','assets/solpacman.png');
-	this.load.image('sol2','assets/solpac2.png');
-	this.load.image('sol3','assets/solpac3.png');
-	this.load.image('sol4','assets/solpac4.png');
+	this.load.image('background','assets/fondzelda.png');	
+	this.load.image('sol','assets/montagne.png');
+	this.load.image('sol2','assets/forest.png');
+	this.load.image('sol3','assets/solzelda.png');
 	this.load.image('stars', 'assets/donnee.png');
-	this.load.image('fantome','assets/fantome.png');
-	this.load.spritesheet('perso','assets/robott.png',{frameWidth: 31, frameHeight: 47});
+	this.load.image('monster','assets/monster.png');
+	this.load.image('mur','assets/murzelda.png');
+	this.load.image('menu','assets/menu.png');
+	this.load.image('bombs','assets/bombs.png');
+	this.load.image('finished', 'assets/finished.png');
+	this.load.spritesheet('perso','assets/robot.png',{frameWidth: 31.5, frameHeight: 40});
 }
 function create(){
 	this.add.image(400,50,'background');
 	
 	platforms = this.physics.add.staticGroup();
-	platforms.create(60,750,'sol').setScale(1).refreshBody();
-	platforms.create(470,750,'sol');
-	platforms.create(850,750,'sol');
-	platforms.create(60,-10,'sol');
-	platforms.create(470,-10,'sol');
-	platforms.create(850,-10,'sol');
-	platforms.create(500,600,'sol2');
-	platforms.create(500,200,'sol2');
-	platforms.create(500,550,'sol3');
-	platforms.create(500,150,'sol3');
-	platforms.create(-100,500,'sol2');
-	platforms.create(-100,200,'sol2');
-	platforms.create(1100,500,'sol2');
-	platforms.create(1100,200,'sol2');
-	platforms.create(300,420,'sol4');
-	platforms.create(700,420,'sol4');
-
-
-	fantome = this.physics.add.group();
-	fantome.create(200, 300, 'fantome');
-	fantome.create(800, 300, 'fantome');
-	 this.physics.add.collider(fantome, platforms);
-
-	 
-	fantome.children.iterate(function (child){
-		child.setBounceY(Phaser.Math.FloatBetween(1, 1.3));
-	});
+	platforms.create(250,50,'sol').setScale(1).refreshBody();
+	platforms.create(-80,150,'sol')
+	platforms.create(-150,300,'sol')
+	platforms.create(550,700,'sol3');
+	platforms.create(-150,650,'sol');
+	platforms.create(500,400,'sol2');
+	platforms.create(1200,50,'sol3');
+	platforms.create(1000,500,'mur');
 	
-	player = this.physics.add.sprite(500,670,'perso');
+
+//Player
+	player = this.physics.add.sprite(250,160,'perso');
 	player.setCollideWorldBounds(true);
 	this.physics.add.collider(player,platforms);
 	
 	cursor = this.input.keyboard.createCursorKeys();
+	//touch = this.input.keyboard.addKey('E');
+
+//Monster
+ 
+	monster = this.physics.add.group({
+    key: 'monster',
+    repeat: 1,
+    setXY: {
+      x: 250,
+      y: 250,
+      stepX: 500,
+      stepY: 200
+    }
+  });
+  	monster.setVelocityY(Phaser.Math.FloatBetween(100, 150));
+	
+	monster.children.iterate(function (child){
+		child.setBounceY(1);
+	});
+	
+	this.physics.add.collider(monster, platforms);
+	this.physics.add.collider(monster, [player], hitmonster, null, this);
+	
+		//toucher
+	
+	function hitmonster (player, monster){
+		
+		this.physics.pause();
+		player.setTint(0xff0000);
+	};
+	
+	
+//Inventory
+
+menu = this.physics.add.staticGroup();
+menu.create(510,50,'menu');
+boomText = this.add.text(16, 50, 'Bombes = 0', {fontSize: '20px', fill:'#FFF'});
+donneeText = this.add.text(16, 16, 'Donnees = 3', {fontSize: '20px', fill:'#FFF'});
+
+	
+//Bombs
+	
+	bombs = this.physics.add.group({
+		key: 'bombs',
+		repeat:0,
+		setXY: {x:900, y:300, stepX:70 }
+	})
+	 this.physics.add.collider(bombs, platforms);
+	 this.physics.add.overlap(player,bombs,collectBombs, null, this);
+	 
+	 function collectBombs (player, bombs){
+		 bombs.disableBody(true, true);
+		 this.boom += 1;
+		 boomText.setText('Bombes: ' + this.boom);
+	 };
+	
+//STARS
 	
 	stars = this.physics.add.group({
 		key: 'stars',
 		repeat:0,
-		setXY: {x:500, y:400, stepX:70 }
+		setXY: {x:900, y:600, stepX:70 }
 	})
 	 this.physics.add.collider(stars, platforms);
 	 this.physics.add.overlap(player,stars,collectStar, null, this);
 	 
 	 function collectStar (player, star){
 		 star.disableBody(true, true);
-	 }
-
-	
-	
-	this.anims.create({
+		 this.donnee += 1;
+		 donneeText.setText('Donnees: ' + this.donnee);
+		 
+		finished = this.physics.add.staticGroup();
+		finished.create(500,300,'finished')
+	 };
+	 
+	 
+	 this.anims.create({
 		key:'left',
 		frames: this.anims.generateFrameNumbers('perso', {start: 0, end: 3}),
 		frameRate: 10,
@@ -101,9 +160,10 @@ function create(){
 		frameRate: 20,
 		repeat: -1
 	});
-
 	
+
 }
+
 
 function update(){
 	
@@ -113,19 +173,18 @@ function update(){
 		player.anims.play('left',true);
 		player.setVelocityX(-190);
 		player.setFlipX(false);
-		fantome.setVelocityY(-150);
 	}
 	
 	else if(cursor.right.isDown) {
 		player.anims.play('left',true);
 		player.setVelocityX(190);
-		player.setFlipX(true);
-		fantome.setVelocityY(150);		
+		player.setFlipX(true);	
 	}
 	
 	else {
 		player.anims.play('stop',true);
 		player.setVelocityX(0);
+		player.setVelocityY(0);
 	}
 
 	if(cursor.up.isDown){
@@ -135,4 +194,10 @@ function update(){
 	if(cursor.down.isDown){
 		player.setVelocityY(200);
 	}
+	
+	//if(touch.E.isDown){
+		//menu.disableBody(true, true);
+	//}
+
 }
+
