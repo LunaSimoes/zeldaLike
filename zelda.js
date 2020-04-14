@@ -108,6 +108,8 @@ function create(){
 	};
 	
 	
+	
+	
 //Inventory
 
 menu = this.physics.add.staticGroup();
@@ -167,8 +169,6 @@ donneeText = this.add.text(16, 16, 'Donnees = 3', {fontSize: '20px', fill:'#FFF'
 	});
 	
 
-}
-
 
 function update(){
 	
@@ -199,10 +199,5 @@ function update(){
 	if(cursor.down.isDown){
 		player.setVelocityY(200);
 	}
-	
-	//if(touch.E.isDown){
-		//menu.disableBody(true, true);
-	//}
-
 }
 
