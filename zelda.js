@@ -72,7 +72,6 @@ function create(){
 	this.physics.add.collider(player,platforms);
 	
 	cursor = this.input.keyboard.createCursorKeys();
-	//touch = this.input.keyboard.addKey('E');
 
 //Monster
  
