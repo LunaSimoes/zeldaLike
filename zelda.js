@@ -13,7 +13,6 @@ var config = {
         }
     },
 	scene: {
-		init: init,
 		preload: preload,
 		create: create,
 		update: update
@@ -22,8 +21,6 @@ var config = {
 
 var game = new Phaser.Game(config);
 
-
-function init(){
 	var platforms;
 	var player;
 	var stars;
@@ -38,7 +35,7 @@ function init(){
 	var donneeText;
 	var vieJoueur = 3;
 
-}
+
 function preload(){
 	this.load.image('background','assets/fondzelda.png');	
 	this.load.image('sol','assets/montagne.png');
@@ -92,7 +89,7 @@ function create(){
 	});
 	
 	this.physics.add.collider(monster, platforms);
-	this.physics.add.collider(monster, [player], hitmonster, null, this);
+	this.physics.add.collider(monster, player, hitmonster, null, this);
 	
 		//toucher
 	
@@ -100,13 +97,11 @@ function create(){
 		
 		vieJoueur = vieJoueur - 1;
 		
-		if (vieJoueur = 0) {
+		if (vieJoueur == 0) {
 			this.physics.pause();
 			player.setTint(0xff0000);
 		}
 	};
-	
-	
 	
 	
 //Inventory
@@ -166,8 +161,7 @@ donneeText = this.add.text(16, 16, 'Donnees = 3', {fontSize: '20px', fill:'#FFF'
 		frameRate: 20,
 		repeat: -1
 	});
-	
-
+}
 
 function update(){
 	
@@ -198,5 +192,5 @@ function update(){
 	if(cursor.down.isDown){
 		player.setVelocityY(200);
 	}
+	
 }
-
