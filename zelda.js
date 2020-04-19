@@ -9,7 +9,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: false
+            debug: true
         }
     },
 	scene: {
@@ -26,6 +26,7 @@ var game = new Phaser.Game(config);
 	var stars;
 	var monster;
 	var cursor;
+	var keyE;
 	var touch;
 	var bombs;
 	var gameOver = false;
@@ -69,6 +70,7 @@ function create(){
 	this.physics.add.collider(player,platforms);
 	
 	cursor = this.input.keyboard.createCursorKeys();
+	keyE = this.input.keyboard.addKey('E');
 
 //Monster
  
@@ -96,6 +98,7 @@ function create(){
 	function hitmonster (player, monster){
 		
 		vieJoueur = vieJoueur - 1;
+		
 		
 		if (vieJoueur == 0) {
 			this.physics.pause();
@@ -127,6 +130,20 @@ donneeText = this.add.text(16, 16, 'Donnees = 3', {fontSize: '20px', fill:'#FFF'
 		 this.boom += 1;
 		 boomText.setText('Bombes: ' + this.boom);
 	 };
+	 
+	 
+//Poser Bombs
+
+	// Touche ACTION = Enregistrer Coordonnées du sprite.
+						//Fonction appelé qui fais spawn l’objet aux coordonnées
+						
+						
+					// var Poserbombs
+					// Poserbombs = visible aux coordonnées du sprite
+					// Poserbombs = this.physics.add.sprite(player.x,player.y,'bombs');
+					// Poserbombs.setCollideWorldBounds(true);
+					// this.physics.add.collider(Poserbombs,monster);
+						
 	
 //STARS
 	
@@ -191,6 +208,10 @@ function update(){
 	
 	if(cursor.down.isDown){
 		player.setVelocityY(200);
+	}
+	
+	if(keyE.isDown){
+      //fonction poserBombs;
 	}
 	
 }
