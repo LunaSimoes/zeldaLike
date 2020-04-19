@@ -9,7 +9,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: true
+            debug: false
         }
     },
 	scene: {
@@ -29,12 +29,13 @@ var game = new Phaser.Game(config);
 	var keyE;
 	var touch;
 	var bombs;
+	var poserBombs;
 	var gameOver = false;
-	this.boom = 0;
-	this.donnee = 3;
+	var boom = 0;
 	var boomText;
-	var donneeText;
 	var vieJoueur = 3;
+	var vieText;
+	
 
 
 function preload(){
@@ -47,6 +48,7 @@ function preload(){
 	this.load.image('mur','assets/murzelda.png');
 	this.load.image('menu','assets/menu.png');
 	this.load.image('bombs','assets/bombs.png');
+	this.load.image('poserBombs','assets/bombs.png');
 	this.load.image('finished', 'assets/finished.png');
 	this.load.spritesheet('perso','assets/robot.png',{frameWidth: 31.5, frameHeight: 40});
 }
@@ -57,11 +59,11 @@ function create(){
 	platforms.create(250,50,'sol').setScale(1).refreshBody();
 	platforms.create(-80,150,'sol')
 	platforms.create(-150,300,'sol')
-	platforms.create(550,700,'sol3');
+	platforms.create(550,600,'sol3');
 	platforms.create(-150,650,'sol');
-	platforms.create(500,400,'sol2');
+	platforms.create(400,350,'sol2');
 	platforms.create(1200,50,'sol3');
-	platforms.create(1000,500,'mur');
+	platforms.create(800,500,'mur');
 	
 
 //Player
@@ -99,6 +101,8 @@ function create(){
 		
 		vieJoueur = vieJoueur - 1;
 		
+		vieText.setText('Vie = ' + vieJoueur);
+		
 		
 		if (vieJoueur == 0) {
 			this.physics.pause();
@@ -111,8 +115,9 @@ function create(){
 
 menu = this.physics.add.staticGroup();
 menu.create(510,50,'menu');
-boomText = this.add.text(16, 50, 'Bombes = 0', {fontSize: '20px', fill:'#FFF'});
-donneeText = this.add.text(16, 16, 'Donnees = 3', {fontSize: '20px', fill:'#FFF'});
+boomText = this.add.text(16, 16, 'Bombes = 0', {fontSize: '20px', fill:'#FFF'});
+vieText = this.add.text(16, 50, 'Vie = 3', {fontSize: '20px', fill:'#FFF'});
+
 
 	
 //Bombs
@@ -120,15 +125,15 @@ donneeText = this.add.text(16, 16, 'Donnees = 3', {fontSize: '20px', fill:'#FFF'
 	bombs = this.physics.add.group({
 		key: 'bombs',
 		repeat:0,
-		setXY: {x:900, y:300, stepX:70 }
+		setXY: {x:500, y:150, stepX:70 }
 	})
 	 this.physics.add.collider(bombs, platforms);
 	 this.physics.add.overlap(player,bombs,collectBombs, null, this);
 	 
 	 function collectBombs (player, bombs){
 		 bombs.disableBody(true, true);
-		 this.boom += 1;
-		 boomText.setText('Bombes: ' + this.boom);
+		 boom += 1;
+		 boomText.setText('Bombes = ' + boom);
 	 };
 	 
 	 
@@ -143,26 +148,13 @@ donneeText = this.add.text(16, 16, 'Donnees = 3', {fontSize: '20px', fill:'#FFF'
 					// Poserbombs = this.physics.add.sprite(player.x,player.y,'bombs');
 					// Poserbombs.setCollideWorldBounds(true);
 					// this.physics.add.collider(Poserbombs,monster);
+					
+		//function poserBombs (player, poserBombs){
+		//Poserbombs = this.physics.add.sprite(player.x,player.y,'bombs');
+		//poserBombs.EnableBody(true, true);
+		
+	 //};	
 						
-	
-//STARS
-	
-	stars = this.physics.add.group({
-		key: 'stars',
-		repeat:0,
-		setXY: {x:900, y:600, stepX:70 }
-	})
-	 this.physics.add.collider(stars, platforms);
-	 this.physics.add.overlap(player,stars,collectStar, null, this);
-	 
-	 function collectStar (player, star){
-		 star.disableBody(true, true);
-		 this.donnee += 1;
-		 donneeText.setText('Donnees: ' + this.donnee);
-		 
-		finished = this.physics.add.staticGroup();
-		finished.create(500,300,'finished')
-	 };
 	 
 	 
 	 this.anims.create({
@@ -211,7 +203,8 @@ function update(){
 	}
 	
 	if(keyE.isDown){
-      //fonction poserBombs;
+		boom -= 1;
+		boomText.setText('Bombes = ' + boom);
 	}
 	
 }
