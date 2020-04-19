@@ -205,6 +205,14 @@ function update(){
 	if(keyE.isDown){
 		boom -= 1;
 		boomText.setText('Bombes = ' + boom);
+		poserBombs = this.physics.add.group({
+    key: 'poserBombs',
+    repeat: 0,
+    setXY: {
+      x: player.x,
+      y: player.y,
+    }
+  });
 	}
 	
 }
