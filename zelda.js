@@ -35,6 +35,8 @@ var game = new Phaser.Game(config);
 	var boomText;
 	var vieJoueur = 3;
 	var vieText;
+	var vieMonstre = 3;
+	var monstreText;
 	
 
 
@@ -117,6 +119,7 @@ menu = this.physics.add.staticGroup();
 menu.create(510,50,'menu');
 boomText = this.add.text(16, 16, 'Bombes = 0', {fontSize: '20px', fill:'#FFF'});
 vieText = this.add.text(16, 50, 'Vie = 3', {fontSize: '20px', fill:'#FFF'});
+monstreText = this.add.text(150, 50, 'VieMonstre = 3', {fontSize: '20px', fill:'#FFF'});
 
 
 	
@@ -217,6 +220,15 @@ function update(){
 	 
 	 function monstrebombs (monster, poserBombs){
 		 poserBombs.disableBody(true, true);
+		 
+		 vieMonstre = vieMonstre - 1;
+		
+		monstreText.setText('vieMonstre = ' + vieMonstre);
+		
+		if (vieMonstre == 0) {
+			monster.destroy();
+		}
+		
 	 };;
 	}
 	
