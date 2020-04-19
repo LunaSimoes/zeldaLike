@@ -212,7 +212,12 @@ function update(){
       x: player.x,
       y: player.y,
     }
-  });
+  })
+	this.physics.add.overlap(monster,poserBombs,monstrebombs, null, this);
+	 
+	 function monstrebombs (monster, poserBombs){
+		 poserBombs.disableBody(true, true);
+	 };;
 	}
 	
 }
