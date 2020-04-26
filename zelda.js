@@ -9,7 +9,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: false
+            debug: true
         }
     },
 	scene: {
@@ -47,36 +47,34 @@ var game = new Phaser.Game(config);
 
 
 function preload(){
-	this.load.image('background','assets/fondzelda.png');	
-	this.load.image('sol','assets/montagne.png');
-	this.load.image('sol2','assets/forest.png');
-	this.load.image('sol3','assets/solzelda.png');
+	this.load.image('background','assets/fond.png');	
+	this.load.image('maison','assets/maison.png');
+	this.load.image('murabre','assets/murarbre.png');
+	this.load.image('forest','assets/forest.png');
+	this.load.image('arbre','assets/arbre.png');
 	this.load.image('stars', 'assets/donnee.png');
 	this.load.image('monster','assets/monster.png');
-	this.load.image('mur','assets/murzelda.png');
 	this.load.image('menu','assets/menu.png');
 	this.load.image('bombs','assets/bombs.png');
 	this.load.image('poserBombs','assets/bombs.png');
 	this.load.image('finished', 'assets/finished.png');
 	this.load.image('potion', 'assets/potion.jpg');
-	this.load.spritesheet('perso','assets/robot.png',{frameWidth: 31.5, frameHeight: 40});
+	this.load.spritesheet('perso','assets/perso.png',{frameWidth: 30, frameHeight: 58});
 }
 function create(){
-	this.add.image(400,50,'background');
+	this.add.image(400,350,'background');
 	
 	platforms = this.physics.add.staticGroup();
-	platforms.create(250,50,'sol').setScale(1).refreshBody();
-	platforms.create(-80,150,'sol')
-	platforms.create(-150,300,'sol')
-	platforms.create(550,600,'sol3');
-	platforms.create(-150,650,'sol');
-	platforms.create(400,350,'sol2');
-	platforms.create(1200,50,'sol3');
-	platforms.create(800,500,'mur');
-	
+	platforms.create(350,250,'forest');
+	platforms.create(490,250,'forest');
+	platforms.create(420,350,'maison');
+	platforms.create(800,300,'murabre');
+	platforms.create(10,90,'murabre');
+	platforms.create(10,560,'arbre');
+
 
 //Player
-	player = this.physics.add.sprite(250,160,'perso');
+	player = this.physics.add.sprite(420,500,'perso');
 	player.setCollideWorldBounds(true);
 	this.physics.add.collider(player,platforms);
 	
@@ -111,6 +109,7 @@ function create(){
 	function hitmonster (player, monster){
 		
 		vieJoueur = vieJoueur - 1;
+		delay = 500;
 		
 		vieText.setText('Vie = ' + vieJoueur);
 		
@@ -125,7 +124,7 @@ function create(){
 //Inventory
 
 menu = this.physics.add.staticGroup();
-menu.create(510,50,'menu');
+menu.create(500,40,'menu');
 boomText = this.add.text(16, 16, 'Bombes = 0', {fontSize: '20px', fill:'#FFF'});
 vieText = this.add.text(16, 50, 'Vie = 3', {fontSize: '20px', fill:'#FFF'});
 monstreText = this.add.text(150, 50, 'VieMonstre = 3', {fontSize: '20px', fill:'#FFF'});
@@ -172,15 +171,15 @@ potionTexte = this.add.text(350, 50, 'Potion = 0', {fontSize: '20px', fill:'#FFF
 	 
 	 this.anims.create({
 		key:'left',
-		frames: this.anims.generateFrameNumbers('perso', {start: 0, end: 3}),
-		frameRate: 10,
+		frames: this.anims.generateFrameNumbers('perso', {start: -1, end: 1}),
+		frameRate: 3,
 		repeat: -1
 	});
 	
 	this.anims.create({
 		key:'stop',
-		frames: this.anims.generateFrameNumbers('perso', {start: 4, end: 4}),
-		frameRate: 20,
+		frames: this.anims.generateFrameNumbers('perso', {start: 2, end: 2}),
+		frameRate: 10,
 		repeat: -1
 	});
 }
@@ -255,7 +254,7 @@ function update(){
 	 
 	 function collectposerBombs (player, poserBombs){
 		 poserBombs.disableBody(true, true);
-		 delay: 500,
+		 delay: 500;
 		 boom += 1;
 		 boomText.setText('Bombes = ' + boom);
 	 };
@@ -274,11 +273,12 @@ function update(){
 	 };
 	}
 	
+	//Potion
+	
 	if(keyZ.isDown){
 		potion -= 1;
 		potionTexte.setText('Potion = ' + potion);
 		vieJoueur += 1;
 		vieText.setText('Vie = ' + vieJoueur);
-	}
-	
+	}	
 }
