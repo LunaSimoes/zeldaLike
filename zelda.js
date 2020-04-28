@@ -22,13 +22,13 @@ var config = {
 var game = new Phaser.Game(config);
 
 	var platforms;
+	var menu;
 	var player;
 	var stars;
 	var monster;
 	var monster2;
 	var cursor;
 	var keyE;
-	var keyU;
 	var keyR;
 	var keyM;
 	var keyP;
@@ -126,9 +126,6 @@ function create(){
 	
 	//fermer inventaire
 	keyP = this.input.keyboard.addKey('P');
-	
-	//ramasser bombes
-	keyU = this.input.keyboard.addKey('U');
 	
 
 //Monster NUMERO 1
@@ -314,7 +311,7 @@ function update(){
   })
 	this.physics.add.overlap(monster,poserBombs,monstrebombs, null, this);
 	this.physics.add.overlap(monster2,poserBombs,monstrebombs2, null, this);
-	this.physics.add.keyU(player,poserBombs,collectposerBombs, null, this);
+	this.physics.add.overlap(player,poserBombs,collectposerBombs, null, this);
 	 
 	 function collectposerBombs (player, poserBombs){
 		 poserBombs.disableBody(true, true);
@@ -404,12 +401,12 @@ function update(){
 	if(keyP.isDown){
 		//Inventory
 
-	menu.destroy();
 	boomText.destroy();
 	vieText.destroy();
 	potionTexte.destroy();
 	rubyTexte.destroy();
-
-	}
+	menu.destroy();
+	
+	};
 	
 }
