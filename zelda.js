@@ -9,7 +9,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: false
+            debug: true
         }
     },
 	scene: {
@@ -71,8 +71,9 @@ function preload(){
 	this.load.image('ruby','assets/ruby.png');
 	this.load.image('bouclier','assets/bouclier.png');
 	this.load.spritesheet('perso','assets/perso.png',{frameWidth: 30, frameHeight: 58});
-	
+	//this.load.spritesheet('monster', 'assets/monster.png',{frameWidth: 30, frameHeight: 50});
 }
+
 function create(){
 	this.add.image(400,350,'background');
 	
@@ -131,6 +132,7 @@ function create(){
 	
 
 //Monster NUMERO 1
+
  
 	monster = this.physics.add.group({
     key: 'monster',
@@ -162,6 +164,16 @@ function create(){
 			player.setTint(0xff0000);
 		}
 	};
+	
+	this.anims.create({
+        key: 'monster',
+        frames: this.anims.generateFrameNumbers('monster', { start: 1, end: 3 }),
+        frameRate: 10,
+        repeat: -1
+    });
+	
+	this.anims.play();
+	
 	
 	//Monster NUMERO 2
  
@@ -246,6 +258,10 @@ function create(){
 		frameRate: 10,
 		repeat: -1
 	});
+	
+	
+	
+
 }
 
 function update(){
@@ -278,6 +294,8 @@ function update(){
 		player.setVelocityY(200);
 	}
 	
+
+	
 	//Bouclier 
 		if(keyR.isDown){
 		bouclier = this.physics.add.staticGroup({
@@ -306,7 +324,7 @@ function update(){
     key: 'poserBombs',
     repeat: 0,
     setXY: {
-      x: player.x,
+      x: player.x+50,
       y: player.y,
     }
   })
@@ -367,7 +385,7 @@ function update(){
 	})
 		}
 		
-		this.physics.add.overlap(player,ruby2,collectruby2, null, this);
+		this.physics.add.overlap(player,ruby,collectruby2, null, this);
 		
 		function collectruby2 (player, ruby){
 		 ruby.disableBody(true, true);
