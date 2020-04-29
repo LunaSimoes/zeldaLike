@@ -13,3 +13,5 @@ Les pièges peuvent être ramasser tout comme les potions.
 Les monstres vous font perdre de la vie.
 
 Vous devez faire entrer un monstre en contact avec un piège pour le tuer.
+
+Vous devez trouver la façon la plus judicieuse de déplacer les boules de neiges qui vous bloquent le passage vers la potion.

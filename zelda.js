@@ -22,6 +22,7 @@ var config = {
 var game = new Phaser.Game(config);
 
 	var platforms;
+	var obstacle;
 	var id_menu;
 	var menu;
 	var player;
@@ -51,6 +52,7 @@ var game = new Phaser.Game(config);
 	var ruby = 0;
 	var potionTexte;
 	var recupbomb = 0;
+	var detroyObstacle = 2;
 	
 	
 
@@ -66,7 +68,7 @@ function preload(){
 	this.load.image('menu','assets/menu.png');
 	this.load.image('bombs','assets/bombs.png');
 	this.load.image('poserBombs','assets/bombs.png');
-	this.load.image('finished', 'assets/finished.png');
+	this.load.image('obstacle', 'assets/obstacle.png');
 	this.load.image('potion', 'assets/potion.png');
 	this.load.image('ruby','assets/ruby.png');
 	this.load.image('bouclier','assets/bouclier.png');
@@ -103,6 +105,23 @@ function create(){
 	platforms.create(0,900,'murabre');
 	platforms.create(940,330,'murabre');
 	platforms.create(940,330,'murabre');
+	
+	
+	//obstacle à bouger pour accéder à la potion
+	
+	obstacle = this.physics.add.group({
+    key: 'obstacle',
+    repeat: 1,
+    setXY: {
+      x: 600,
+      y: 500,
+		stepX: 110,
+		stepY: 10,
+    }
+  });
+  
+  this.physics.add.collider(obstacle,platforms);
+  this.physics.add.collider(obstacle,obstacle);
 
 
 //Player
@@ -129,6 +148,10 @@ function create(){
 	
 	//fermer inventaire
 	keyP = this.input.keyboard.addKey('P');
+	
+	if (detroyObstacle >= 0){
+		this.physics.add.collider(player,obstacle);
+	}
 	
 
 //Monster NUMERO 1
@@ -281,6 +304,7 @@ function update(){
 	}
 	
 	else {
+	
 		player.anims.play('stop',true);
 		player.setVelocityX(0);
 		player.setVelocityY(0);
@@ -318,6 +342,7 @@ function update(){
 	
 	
 	//Poser Bombes
+	
 	if(keyE.isDown){
 		boom -= 1;
 		poserBombs = this.physics.add.group({
@@ -343,8 +368,10 @@ function update(){
 		 vieMonstre = vieMonstre - 1;
 
 	//MONSTRE 1 MEURT	
+	
 		if (vieMonstre == 0) {
 			monster.destroy();
+			detroyObstacle == detroyObstacle -1;
 			ruby = this.physics.add.group({
 		key: 'ruby',
 		repeat: 0,
@@ -363,7 +390,7 @@ function update(){
 		 delay: 500;
 		 ruby += 1;
 	 };
-		//}
+		}
 		
 	 };
 	 
@@ -375,6 +402,7 @@ function update(){
 		//MONSTRE 2 MEURT	
 		if (vieMonstre2 == 0) {
 			monster2.destroy();
+			detroyObstacle == detroyObstacle -1;
 			ruby = this.physics.add.group({
 		key: 'ruby',
 		repeat: 0,
@@ -394,9 +422,6 @@ function update(){
 	 };
 		
 	 };
-	 
-	}
-
 	
 	//Potion
 	
