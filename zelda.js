@@ -2,7 +2,7 @@ let gameScene = new Phaser.Scene('Zelda');
 
 var config = {
 	type: Phaser.AUTO,
-	width: 800 ,
+	width: 800,
 	height: 600,
 	scene: gameScene,
 	physics: {
@@ -22,12 +22,18 @@ var config = {
 var game = new Phaser.Game(config);
 
 	var platforms;
+	var id_menu;
+	var menu;
 	var player;
 	var stars;
 	var monster;
+	var monster2;
 	var cursor;
 	var keyE;
-	var keyR
+	var keyR;
+	var keyM;
+	var keyP;
+	var keyZ;
 	var touch;
 	var bouclier;
 	var bombs;
@@ -39,62 +45,99 @@ var game = new Phaser.Game(config);
 	var vieJoueur = 3;
 	var vieText;
 	var vieMonstre = 3;
-	var monstreText;
+	var vieMonstre2 = 3;
 	var potion = 0;
 	var potionTexte;
+	var ruby = 0;
+	var potionTexte;
+	var recupbomb = 0;
 	
 	
 
 
 function preload(){
-	this.load.image('background','assets/fondzelda.png');	
-	this.load.image('sol','assets/montagne.png');
-	this.load.image('sol2','assets/forest.png');
-	this.load.image('sol3','assets/solzelda.png');
+	this.load.image('background','assets/fond.png');	
+	this.load.image('maison','assets/maison.png');
+	this.load.image('murabre','assets/murarbre.png');
+	this.load.image('forest','assets/forest.png');
+	this.load.image('arbre','assets/arbre.png');
 	this.load.image('stars', 'assets/donnee.png');
 	this.load.image('monster','assets/monster.png');
-	this.load.image('mur','assets/murzelda.png');
 	this.load.image('menu','assets/menu.png');
 	this.load.image('bombs','assets/bombs.png');
 	this.load.image('poserBombs','assets/bombs.png');
 	this.load.image('finished', 'assets/finished.png');
-	this.load.image('potion', 'assets/potion.jpg');
-	this.load.spritesheet('perso','assets/robot.png',{frameWidth: 31.5, frameHeight: 40});
+	this.load.image('potion', 'assets/potion.png');
+	this.load.image('ruby','assets/ruby.png');
+	this.load.image('bouclier','assets/bouclier.png');
+	this.load.spritesheet('perso','assets/perso.png',{frameWidth: 30, frameHeight: 58});
+	
 }
 function create(){
-	this.add.image(400,50,'background');
+	this.add.image(400,350,'background');
 	
 	platforms = this.physics.add.staticGroup();
-	platforms.create(250,50,'sol').setScale(1).refreshBody();
-	platforms.create(-80,150,'sol')
-	platforms.create(-150,300,'sol')
-	platforms.create(550,600,'sol3');
-	platforms.create(-150,650,'sol');
-	platforms.create(400,350,'sol2');
-	platforms.create(1200,50,'sol3');
-	platforms.create(800,500,'mur');
+	platforms.create(300,-10,'forest');
+	platforms.create(480,-10,'forest');
+	platforms.create(780,-10,'forest');
 	
+	platforms.create(350,250,'forest');
+	platforms.create(490,250,'forest');
+	
+	platforms.create(420,350,'maison');
+	platforms.create(850,300,'murabre');
+	platforms.create(10,90,'murabre');
+	platforms.create(10,560,'arbre');
+	
+	platforms.create(150,650,'forest');
+	platforms.create(300,650,'forest');
+	platforms.create(480,650,'forest');
+	platforms.create(780,650,'forest');
+	
+	platforms.create(110,950,'forest');
+	platforms.create(290,950,'forest');
+	platforms.create(480,950,'forest');
+	platforms.create(650,950,'forest');
+	
+	platforms.create(0,900,'murabre');
+	platforms.create(940,330,'murabre');
+	platforms.create(940,330,'murabre');
+
 
 //Player
-	player = this.physics.add.sprite(250,160,'perso');
-	player.setCollideWorldBounds(true);
+	player = this.physics.add.sprite(420,500,'perso');
+	player.setCollideWorldBounds(false);
 	this.physics.add.collider(player,platforms);
+	this.cameras.main.startFollow(player);
+	this.cameras.main.setBounds(0, 0, 1000, 1000);
 	
 	cursor = this.input.keyboard.createCursorKeys();
+	
+	//poser bombes
 	keyE = this.input.keyboard.addKey('E');
+	
+	//utiliser potion
 	keyZ = this.input.keyboard.addKey('Z');
+	
+	//dégainer bouclier
+	
 	keyR = this.input.keyboard.addKey('R');
+	
+	//ouvrir inventaire
+	keyM = this.input.keyboard.addKey('M');
+	
+	//fermer inventaire
+	keyP = this.input.keyboard.addKey('P');
+	
 
-//Monster
+//Monster NUMERO 1
  
 	monster = this.physics.add.group({
     key: 'monster',
-    repeat: 1,
+    repeat: 0,
     setXY: {
-      x: 250,
+      x: 210,
       y: 250,
-      stepX: 500,
-      stepY: 200
     }
   });
   	monster.setVelocityY(Phaser.Math.FloatBetween(100, 150));
@@ -104,6 +147,7 @@ function create(){
 	});
 	
 	this.physics.add.collider(monster, platforms);
+	this.physics.add.collider(monster, bouclier);
 	this.physics.add.collider(monster, player, hitmonster, null, this);
 	
 		//toucher
@@ -111,9 +155,7 @@ function create(){
 	function hitmonster (player, monster){
 		
 		vieJoueur = vieJoueur - 1;
-		
-		vieText.setText('Vie = ' + vieJoueur);
-		
+		delay = 500;
 		
 		if (vieJoueur == 0) {
 			this.physics.pause();
@@ -121,15 +163,38 @@ function create(){
 		}
 	};
 	
+	//Monster NUMERO 2
+ 
+	monster2 = this.physics.add.group({
+    key: 'monster',
+    repeat: 0,
+    setXY: {
+      x: 600,
+      y: 500,
+    }
+  });
+  	monster2.setVelocityY(Phaser.Math.FloatBetween(100,150));
 	
-//Inventory
-
-menu = this.physics.add.staticGroup();
-menu.create(510,50,'menu');
-boomText = this.add.text(16, 16, 'Bombes = 0', {fontSize: '20px', fill:'#FFF'});
-vieText = this.add.text(16, 50, 'Vie = 3', {fontSize: '20px', fill:'#FFF'});
-monstreText = this.add.text(150, 50, 'VieMonstre = 3', {fontSize: '20px', fill:'#FFF'});
-potionTexte = this.add.text(350, 50, 'Potion = 0', {fontSize: '20px', fill:'#FFF'});
+	monster2.children.iterate(function (child){
+		child.setBounceY(1);
+	});
+	
+	this.physics.add.collider(monster2, platforms);
+	this.physics.add.collider(monster2, player, hitmonster2, null, this);
+	
+		//toucher
+	
+	function hitmonster2 (player, monster2){
+		
+		vieJoueur = vieJoueur - 1;
+		delay = 500;
+		
+		if (vieJoueur == 0) {
+			this.physics.pause();
+			player.setTint(0xff0000);
+		}
+	};
+	
 
 
 	
@@ -146,7 +211,6 @@ potionTexte = this.add.text(350, 50, 'Potion = 0', {fontSize: '20px', fill:'#FFF
 	 function collectBombs (player, bombs){
 		 bombs.disableBody(true, true);
 		 boom += 1;
-		 boomText.setText('Bombes = ' + boom);
 	 };
 	 
 	 
@@ -156,7 +220,7 @@ potionTexte = this.add.text(350, 50, 'Potion = 0', {fontSize: '20px', fill:'#FFF
 		key: 'potion',
 		repeat:0,
 		
-		setXY: {x:300, y:550, stepX:70 }
+		setXY: {x:150, y:790, stepX:70 }
 	})
 	 this.physics.add.collider(potion, platforms);
 	 this.physics.add.overlap(player,potion,collectPotion, null, this);
@@ -164,7 +228,6 @@ potionTexte = this.add.text(350, 50, 'Potion = 0', {fontSize: '20px', fill:'#FFF
 	 function collectPotion (player, potion){
 		 potion.disableBody(true, true);
 		 potion += 1;
-		 potionTexte.setText('Potion = ' + potion);
 	 };
 	 
 						
@@ -172,15 +235,15 @@ potionTexte = this.add.text(350, 50, 'Potion = 0', {fontSize: '20px', fill:'#FFF
 	 
 	 this.anims.create({
 		key:'left',
-		frames: this.anims.generateFrameNumbers('perso', {start: 0, end: 3}),
-		frameRate: 10,
+		frames: this.anims.generateFrameNumbers('perso', {start: -1, end: 1}),
+		frameRate: 3,
 		repeat: -1
 	});
 	
 	this.anims.create({
 		key:'stop',
-		frames: this.anims.generateFrameNumbers('perso', {start: 4, end: 4}),
-		frameRate: 20,
+		frames: this.anims.generateFrameNumbers('perso', {start: 2, end: 2}),
+		frameRate: 10,
 		repeat: -1
 	});
 }
@@ -222,26 +285,23 @@ function update(){
     repeat: 0,
     setXY: {
       x: player.x,
-      y: player.y + 10,
+      y: player.y,
     }
   })
-	this.physics.add.overlap(monster,bouclier,protection, null, this);
+
+	this.physics.add.collider(bouclier,monster);
 	this.physics.add.overlap(player,bouclier,collectbouclier, null, this);
 	 
 	 function collectbouclier (player, bouclier){
 		 bouclier.disableBody(true, true);
 	 };
 	 
-	 function protection (monster, bouclier){
-		 bouclier.disableBody(true, true);
-	 };
 	}
 	
 	
 	//Poser Bombes
 	if(keyE.isDown){
 		boom -= 1;
-		boomText.setText('Bombes = ' + boom);
 		poserBombs = this.physics.add.group({
     key: 'poserBombs',
     repeat: 0,
@@ -251,34 +311,104 @@ function update(){
     }
   })
 	this.physics.add.overlap(monster,poserBombs,monstrebombs, null, this);
+	this.physics.add.overlap(monster2,poserBombs,monstrebombs2, null, this);
 	this.physics.add.overlap(player,poserBombs,collectposerBombs, null, this);
 	 
 	 function collectposerBombs (player, poserBombs){
 		 poserBombs.disableBody(true, true);
-		 delay: 500,
 		 boom += 1;
-		 boomText.setText('Bombes = ' + boom);
 	 };
 	 
 	 function monstrebombs (monster, poserBombs){
 		 poserBombs.disableBody(true, true);
 		 
 		 vieMonstre = vieMonstre - 1;
-		
-		monstreText.setText('vieMonstre = ' + vieMonstre);
-		
+
+	//MONSTRE 1 MEURT	
 		if (vieMonstre == 0) {
 			monster.destroy();
+			ruby = this.physics.add.group({
+		key: 'ruby',
+		repeat: 0,
+		setXY: {
+		x: monster.x,
+		y: monster.y,
+		}
+	})
 		}
 		
+		//if (var recupbomb = 1){
+		this.physics.add.overlap(player,ruby,collectruby, null, this);
+		
+		function collectruby (player, ruby){
+		 ruby.disableBody(true, true);
+		 delay: 500;
+		 ruby += 1;
 	 };
+		//}
+		
+	 };
+	 
+	 function monstrebombs2 (monster2, poserBombs){
+		poserBombs.disableBody(true, true);
+		 
+		 vieMonstre2 = vieMonstre2 - 1;
+	
+		//MONSTRE 2 MEURT	
+		if (vieMonstre2 == 0) {
+			monster2.destroy();
+			ruby = this.physics.add.group({
+		key: 'ruby',
+		repeat: 0,
+		setXY: {
+		x: monster2.x,
+		y: monster2.y,
+		}
+	})
+		}
+		
+		this.physics.add.overlap(player,ruby2,collectruby2, null, this);
+		
+		function collectruby2 (player, ruby){
+		 ruby.disableBody(true, true);
+		 delay: 500;
+		 ruby += 1;
+	 };
+		
+	 };
+	 
 	}
+
+	
+	//Potion
 	
 	if(keyZ.isDown){
 		potion -= 1;
-		potionTexte.setText('Potion = ' + potion);
 		vieJoueur += 1;
-		vieText.setText('Vie = ' + vieJoueur);
-	}
+	}	
+	
+		//Inventaire
+		
+	
+	if (Phaser.Input.Keyboard.JustDown(keyM)){
+		//Inventory
+
+	id_menu = this.physics.add.image(player.x, player.y, "menu");
+	boomText = this.add.text(player.x-300, player.y-25, 'Bombes = ' + boom, {fontSize: '20px', fill:'#FFF'});
+	vieText = this.add.text(player.x+200, player.y-25, 'Vie = ' + vieJoueur, {fontSize: '20px', fill:'#FFF'});
+	potionTexte = this.add.text(player.x-300, player.y, 'Potion = ' + potion, {fontSize: '20px', fill:'#FFF'});
+	rubyTexte = this.add.text(player.x+200, player.y, 'Ruby = ' + ruby, {fontSize: '20px', fill:'#FFF'});
+}
+
+	 if (Phaser.Input.Keyboard.JustDown(keyP)){
+		//Inventory
+
+	id_menu.visible = false;
+	boomText.destroy();
+	vieText.destroy();
+	potionTexte.destroy();
+	rubyTexte.destroy();
+	
+	};
 	
 }
