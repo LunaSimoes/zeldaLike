@@ -1,0 +1,15 @@
+
+Commandes
+
+1) Appuyez sur les flèches pour vous déplacer
+2) E pour poser les pièges
+3) Z pour utiliser la potion qui rend de la vie
+4) M pour ouvrir l'inventaire
+5) P pour fermer l'inventaire
+6) R pour activer le bouclier
+
+
+Les pièges peuvent être ramasser tout comme les potions.
+Les monstres vous font perdre de la vie.
+
+Vous devez faire entrer un monstre en contact avec un piège pour le tuer.

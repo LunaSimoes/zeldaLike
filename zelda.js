@@ -22,6 +22,7 @@ var config = {
 var game = new Phaser.Game(config);
 
 	var platforms;
+	var id_menu;
 	var menu;
 	var player;
 	var stars;
@@ -66,8 +67,9 @@ function preload(){
 	this.load.image('bombs','assets/bombs.png');
 	this.load.image('poserBombs','assets/bombs.png');
 	this.load.image('finished', 'assets/finished.png');
-	this.load.image('potion', 'assets/potion.jpg');
+	this.load.image('potion', 'assets/potion.png');
 	this.load.image('ruby','assets/ruby.png');
+	this.load.image('bouclier','assets/bouclier.png');
 	this.load.spritesheet('perso','assets/perso.png',{frameWidth: 30, frameHeight: 58});
 	
 }
@@ -145,6 +147,7 @@ function create(){
 	});
 	
 	this.physics.add.collider(monster, platforms);
+	this.physics.add.collider(monster, bouclier);
 	this.physics.add.collider(monster, player, hitmonster, null, this);
 	
 		//toucher
@@ -166,11 +169,11 @@ function create(){
     key: 'monster',
     repeat: 0,
     setXY: {
-      x: 610,
-      y: 250,
+      x: 600,
+      y: 500,
     }
   });
-  	monster2.setVelocityX(Phaser.Math.FloatBetween(100,150));
+  	monster2.setVelocityY(Phaser.Math.FloatBetween(100,150));
 	
 	monster2.children.iterate(function (child){
 		child.setBounceY(1);
@@ -217,7 +220,7 @@ function create(){
 		key: 'potion',
 		repeat:0,
 		
-		setXY: {x:300, y:550, stepX:70 }
+		setXY: {x:150, y:790, stepX:70 }
 	})
 	 this.physics.add.collider(potion, platforms);
 	 this.physics.add.overlap(player,potion,collectPotion, null, this);
@@ -282,19 +285,17 @@ function update(){
     repeat: 0,
     setXY: {
       x: player.x,
-      y: player.y + 10,
+      y: player.y,
     }
   })
-	this.physics.add.overlap(monster,bouclier,protection, null, this);
+
+	this.physics.add.collider(bouclier,monster);
 	this.physics.add.overlap(player,bouclier,collectbouclier, null, this);
 	 
 	 function collectbouclier (player, bouclier){
 		 bouclier.disableBody(true, true);
 	 };
 	 
-	 function protection (monster, bouclier){
-		 bouclier.disableBody(true, true);
-	 };
 	}
 	
 	
@@ -305,7 +306,7 @@ function update(){
     key: 'poserBombs',
     repeat: 0,
     setXY: {
-      x: player.x+200,
+      x: player.x,
       y: player.y,
     }
   })
@@ -322,13 +323,6 @@ function update(){
 		 poserBombs.disableBody(true, true);
 		 
 		 vieMonstre = vieMonstre - 1;
-		 
-	function monstrebombs2 (monster2, poserBombs){
-		poserBombs.disableBody(true, true);
-		 
-		 vieMonstre2 = vieMonstre2 - 1;
-		 
-		 
 
 	//MONSTRE 1 MEURT	
 		if (vieMonstre == 0) {
@@ -343,6 +337,7 @@ function update(){
 	})
 		}
 		
+		//if (var recupbomb = 1){
 		this.physics.add.overlap(player,ruby,collectruby, null, this);
 		
 		function collectruby (player, ruby){
@@ -350,9 +345,14 @@ function update(){
 		 delay: 500;
 		 ruby += 1;
 	 };
+		//}
 		
 	 };
-	}
+	 
+	 function monstrebombs2 (monster2, poserBombs){
+		poserBombs.disableBody(true, true);
+		 
+		 vieMonstre2 = vieMonstre2 - 1;
 	
 		//MONSTRE 2 MEURT	
 		if (vieMonstre2 == 0) {
@@ -376,6 +376,8 @@ function update(){
 	 };
 		
 	 };
+	 
+	}
 
 	
 	//Potion
@@ -386,26 +388,26 @@ function update(){
 	}	
 	
 		//Inventaire
+		
 	
-	if(keyM.isDown){
+	if (Phaser.Input.Keyboard.JustDown(keyM)){
 		//Inventory
 
-	menu = this.physics.add.staticGroup();
-	menu.create(player.x,player.y,'menu');
+	id_menu = this.physics.add.image(player.x, player.y, "menu");
 	boomText = this.add.text(player.x-300, player.y-25, 'Bombes = ' + boom, {fontSize: '20px', fill:'#FFF'});
 	vieText = this.add.text(player.x+200, player.y-25, 'Vie = ' + vieJoueur, {fontSize: '20px', fill:'#FFF'});
 	potionTexte = this.add.text(player.x-300, player.y, 'Potion = ' + potion, {fontSize: '20px', fill:'#FFF'});
 	rubyTexte = this.add.text(player.x+200, player.y, 'Ruby = ' + ruby, {fontSize: '20px', fill:'#FFF'});
 }
 
-	if(keyP.isDown){
+	 if (Phaser.Input.Keyboard.JustDown(keyP)){
 		//Inventory
 
+	id_menu.visible = false;
 	boomText.destroy();
 	vieText.destroy();
 	potionTexte.destroy();
 	rubyTexte.destroy();
-	menu.destroy();
 	
 	};
 	
