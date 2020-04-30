@@ -135,7 +135,7 @@ function create(){
 
 		//UI
 		
-	UI = this.add.image(0,0,'menu');
+	UI = this.add.image(0,20,'menu');
 	UI.setScrollFactor(0);
 		
 	vieText = this.add.text(10, 10, 'Vie = ' + vieJoueur, {fontSize: '20px', fill:'#FFF'});
@@ -459,7 +459,7 @@ function update(){
 	if (Phaser.Input.Keyboard.JustDown(keyM)){
 		//Inventory
 
-	id_menu = this.physics.add.image(300, 300, "menu2");
+	id_menu = this.physics.add.image(290, 300, "menu2");
 	id_menu.setScrollFactor(0);
 	boomText = this.add.text(110, 110, 'Bombes = ' + boom, {fontSize: '20px', fill:'#FFF'});
 	boomText.setScrollFactor(0);
