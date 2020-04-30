@@ -51,8 +51,10 @@ var game = new Phaser.Game(config);
 	var potionTexte;
 	var ruby = 0;
 	var potionTexte;
+	var quitterTexte;
+	var ouvrirText;
 	var recupbomb = 0;
-	var detroyObstacle = 2;
+	var UI;
 	
 	
 
@@ -66,6 +68,7 @@ function preload(){
 	this.load.image('stars', 'assets/donnee.png');
 	this.load.image('monster','assets/monster.png');
 	this.load.image('menu','assets/menu.png');
+	this.load.image('menu2','assets/menu2.png');
 	this.load.image('bombs','assets/bombs.png');
 	this.load.image('poserBombs','assets/bombs.png');
 	this.load.image('obstacle', 'assets/obstacle.png');
@@ -122,12 +125,32 @@ function create(){
   
   this.physics.add.collider(obstacle,platforms);
   this.physics.add.collider(obstacle,obstacle);
+  this.physics.add.collider(obstacle,monster2);
+  
+  obstacle.children.iterate(function (child){
+		child.setBounceY(1);
+	});
 
+//Interface
+
+		//UI
+		
+	UI = this.add.image(0,0,'menu');
+	UI.setScrollFactor(0);
+		
+	vieText = this.add.text(10, 10, 'Vie = ' + vieJoueur, {fontSize: '20px', fill:'#FFF'});
+	vieText.setScrollFactor(0);
+	
+	ouvrirText = this.add.text(150, 10, 'Inventaire [M]', {fontSize: '20px', fill:'#FFF'});
+	ouvrirText.setScrollFactor(0);
+
+	
 
 //Player
 	player = this.physics.add.sprite(420,500,'perso');
 	player.setCollideWorldBounds(false);
 	this.physics.add.collider(player,platforms);
+	this.physics.add.collider(player,obstacle);
 	this.cameras.main.startFollow(player);
 	this.cameras.main.setBounds(0, 0, 1000, 1000);
 	
@@ -149,9 +172,7 @@ function create(){
 	//fermer inventaire
 	keyP = this.input.keyboard.addKey('P');
 	
-	if (detroyObstacle >= 0){
-		this.physics.add.collider(player,obstacle);
-	}
+
 	
 
 //Monster NUMERO 1
@@ -173,6 +194,7 @@ function create(){
 	
 	this.physics.add.collider(monster, platforms);
 	this.physics.add.collider(monster, bouclier);
+	this.physics.add.collider(monster, obstacle);
 	this.physics.add.collider(monster, player, hitmonster, null, this);
 	
 		//toucher
@@ -205,7 +227,7 @@ function create(){
     repeat: 0,
     setXY: {
       x: 600,
-      y: 500,
+      y: 400,
     }
   });
   	monster2.setVelocityY(Phaser.Math.FloatBetween(100,150));
@@ -215,6 +237,7 @@ function create(){
 	});
 	
 	this.physics.add.collider(monster2, platforms);
+	this.physics.add.collider(monster2, obstacle);
 	this.physics.add.collider(monster2, player, hitmonster2, null, this);
 	
 		//toucher
@@ -436,11 +459,16 @@ function update(){
 	if (Phaser.Input.Keyboard.JustDown(keyM)){
 		//Inventory
 
-	id_menu = this.physics.add.image(player.x, player.y, "menu");
-	boomText = this.add.text(player.x-300, player.y-25, 'Bombes = ' + boom, {fontSize: '20px', fill:'#FFF'});
-	vieText = this.add.text(player.x+200, player.y-25, 'Vie = ' + vieJoueur, {fontSize: '20px', fill:'#FFF'});
-	potionTexte = this.add.text(player.x-300, player.y, 'Potion = ' + potion, {fontSize: '20px', fill:'#FFF'});
-	rubyTexte = this.add.text(player.x+200, player.y, 'Ruby = ' + ruby, {fontSize: '20px', fill:'#FFF'});
+	id_menu = this.physics.add.image(300, 300, "menu2");
+	id_menu.setScrollFactor(0);
+	boomText = this.add.text(110, 110, 'Bombes = ' + boom, {fontSize: '20px', fill:'#FFF'});
+	boomText.setScrollFactor(0);
+	potionTexte = this.add.text(110, 190, 'Potion = ' + potion, {fontSize: '20px', fill:'#FFF'});
+	potionTexte.setScrollFactor(0);
+	rubyTexte = this.add.text(110, 280, 'Ruby = ' + ruby, {fontSize: '20px', fill:'#FFF'});
+	rubyTexte.setScrollFactor(0);
+	quitterTexte = this.add.text(110, 500, 'Quitter [P]', {fontSize: '20px', fill:'#FFF'});
+	quitterTexte.setScrollFactor(0);
 }
 
 	 if (Phaser.Input.Keyboard.JustDown(keyP)){
@@ -448,9 +476,9 @@ function update(){
 
 	id_menu.visible = false;
 	boomText.destroy();
-	vieText.destroy();
 	potionTexte.destroy();
 	rubyTexte.destroy();
+	quitterTexte.destroy();
 	
 	};
 	
