@@ -2,14 +2,14 @@ let gameScene = new Phaser.Scene('Zelda');
 
 var config = {
 	type: Phaser.AUTO,
-	width: 800,
-	height: 600,
+	width: 2000,
+	height: 2000,
 	scene: gameScene,
 	physics: {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: true
+            debug: false
         }
     },
 	scene: {
@@ -27,20 +27,27 @@ var game = new Phaser.Game(config);
 	var menu;
 	var player;
 	var stars;
+	
 	var monster;
 	var monster2;
+	
 	var cursor;
 	var keyE;
 	var keyR;
 	var keyM;
 	var keyP;
 	var keyZ;
+	var keyY;
 	var touch;
+	
 	var bouclier;
 	var bombs;
 	var poserBombs;
 	var potion;
+	
 	var gameOver = false;
+	var utiliserBouclier = false;
+	
 	var boom = 0;
 	var boomText;
 	var vieJoueur = 3;
@@ -51,10 +58,18 @@ var game = new Phaser.Game(config);
 	var potionTexte;
 	var ruby = 0;
 	var potionTexte;
+	var annonceTexte;
 	var quitterTexte;
 	var ouvrirText;
 	var recupbomb = 0;
 	var UI;
+	
+	var coffre;
+	var coffre2;
+	
+	//essaie item obtenus
+	var nombreObtenu = 0;
+	var itemObtenu = 'Rien';
 	
 	
 
@@ -64,6 +79,7 @@ function preload(){
 	this.load.image('maison','assets/maison.png');
 	this.load.image('murabre','assets/murarbre.png');
 	this.load.image('forest','assets/forest.png');
+	this.load.image('rangearbre','assets/rangearbre.png');
 	this.load.image('arbre','assets/arbre.png');
 	this.load.image('stars', 'assets/donnee.png');
 	this.load.image('monster','assets/monster.png');
@@ -74,40 +90,78 @@ function preload(){
 	this.load.image('obstacle', 'assets/obstacle.png');
 	this.load.image('potion', 'assets/potion.png');
 	this.load.image('ruby','assets/ruby.png');
+	this.load.image('coffre','assets/coffre.png');
 	this.load.image('bouclier','assets/bouclier.png');
 	this.load.spritesheet('perso','assets/perso.png',{frameWidth: 30, frameHeight: 58});
 	//this.load.spritesheet('monster', 'assets/monster.png',{frameWidth: 30, frameHeight: 50});
 }
 
 function create(){
-	this.add.image(400,350,'background');
+	this.add.image(2150,2150,'background');
 	
 	platforms = this.physics.add.staticGroup();
-	platforms.create(300,-10,'forest');
-	platforms.create(480,-10,'forest');
-	platforms.create(780,-10,'forest');
 	
-	platforms.create(350,250,'forest');
-	platforms.create(490,250,'forest');
+	platforms.create(1000,10,'rangearbre');
 	
-	platforms.create(420,350,'maison');
+	platforms.create(350,270,'forest');
+	platforms.create(490,270,'forest');
+	
+	platforms.create(440,370,'forest'); //empeche le joueur de marcher sur une partie de la maison
+	platforms.create(400,370,'forest'); //empeche le joueur de marcher sur une partie de la maison
+	
+	this.add.image(420,350,'maison');
+	//platforms.create(420,350,'maison');
 	platforms.create(850,300,'murabre');
-	platforms.create(10,90,'murabre');
-	platforms.create(10,560,'arbre');
 	
-	platforms.create(150,650,'forest');
-	platforms.create(300,650,'forest');
+	platforms.create(300,670,'forest');
+	platforms.create(150,680,'forest');
 	platforms.create(480,650,'forest');
 	platforms.create(780,650,'forest');
 	
-	platforms.create(110,950,'forest');
-	platforms.create(290,950,'forest');
-	platforms.create(480,950,'forest');
-	platforms.create(650,950,'forest');
+	platforms.create(110,960,'forest');
+	platforms.create(500,900,'forest');
+	platforms.create(400,950,'forest');
+	platforms.create(250,980,'forest');
 	
-	platforms.create(0,900,'murabre');
+	platforms.create(10,330,'murabre');
+	platforms.create(10,950,'murabre');
+	platforms.create(10,350,'murabre');
+	platforms.create(10,990,'murabre');
+	platforms.create(10,1640,'murabre');
+	platforms.create(150,90,'arbre');
+	
+	platforms.create(310,1360,'forest');
+	platforms.create(700,1300,'forest');
+	platforms.create(600,1350,'forest');
+	platforms.create(450,1380,'forest');
+	platforms.create(310,1460,'forest');
+	platforms.create(700,1400,'forest');
+	platforms.create(600,1450,'forest');
+	platforms.create(450,1480,'forest');
+	
+
+	platforms.create(310,1960,'forest');
+	platforms.create(700,1900,'forest');
+	platforms.create(600,1950,'forest');
+	platforms.create(450,1980,'forest');
+	platforms.create(310,1960,'forest');
+	platforms.create(600,1950,'forest');
+	platforms.create(450,1980,'forest');
+	
+	platforms.create(670,1550,'forest');
+	platforms.create(750,1610,'forest');
+	platforms.create(750,1720,'forest');
+	platforms.create(750,1800,'forest');
+	
+	platforms.create(700,1900,'forest');
+
 	platforms.create(940,330,'murabre');
-	platforms.create(940,330,'murabre');
+	platforms.create(960,950,'murabre');
+	platforms.create(2000,350,'murabre');
+	platforms.create(2000,990,'murabre');
+	platforms.create(2000,1650,'murabre');
+	
+	platforms.create(990,2000,'rangearbre');
 	
 	
 	//obstacle à bouger pour accéder à la potion
@@ -138,8 +192,8 @@ function create(){
 	player.setCollideWorldBounds(false);
 	this.physics.add.collider(player,platforms);
 	this.physics.add.collider(player,obstacle);
-	this.cameras.main.startFollow(player);
-	this.cameras.main.setBounds(0, 0, 1000, 1000);
+	//this.cameras.main.startFollow(player);
+	//this.cameras.main.setBounds(0, 0, 2000, 2000);
 	
 	cursor = this.input.keyboard.createCursorKeys();
 	
@@ -159,6 +213,9 @@ function create(){
 	//fermer inventaire
 	keyP = this.input.keyboard.addKey('P');
 	
+	//fermer boite de dialogue
+	keyY = this.input.keyboard.addKey('Y');
+	
 
 	
 
@@ -167,10 +224,12 @@ function create(){
  
 	monster = this.physics.add.group({
     key: 'monster',
-    repeat: 0,
+    repeat: 1,
     setXY: {
       x: 210,
       y: 250,
+		stepX: 900,
+		stepY: 50,
     }
   });
   	monster.setVelocityY(Phaser.Math.FloatBetween(100, 150));
@@ -214,16 +273,18 @@ function create(){
  
 	monster2 = this.physics.add.group({
     key: 'monster',
-    repeat: 0,
+    repeat: 1,
     setXY: {
-      x: 600,
-      y: 400,
+      x: 700,
+      y: 800,
+		stepX: 500,
+		stepY: 500,
     }
   });
-  	monster2.setVelocityY(Phaser.Math.FloatBetween(100,150));
+  	monster2.setVelocityX(Phaser.Math.FloatBetween(100,150));
 	
 	monster2.children.iterate(function (child){
-		child.setBounceY(1);
+		child.setBounceX(1);
 	});
 	
 	this.physics.add.collider(monster2, platforms);
@@ -236,6 +297,7 @@ function create(){
 		
 		vieJoueur = vieJoueur - 1;
 		vieText.destroy();
+		
 		vieText = this.add.text(10, 10, 'Vie = ' + vieJoueur, {fontSize: '20px', fill:'#FFF'});
 		vieText.setScrollFactor(0);
 		delay = 500;
@@ -245,24 +307,7 @@ function create(){
 			player.setTint(0xff0000);
 		}
 	};
-	
 
-
-	
-//Bombs
-	
-	bombs = this.physics.add.group({
-		key: 'bombs',
-		repeat:0,
-		setXY: {x:500, y:150, stepX:70 }
-	})
-	 this.physics.add.collider(bombs, platforms);
-	 this.physics.add.overlap(player,bombs,collectBombs, null, this);
-	 
-	 function collectBombs (player, bombs){
-		 bombs.disableBody(true, true);
-		 boom += 1;
-	 };
 	 
 	 
 //Potions
@@ -277,8 +322,36 @@ function create(){
 	 this.physics.add.overlap(player,potion,collectPotion, null, this);
 	 
 	 function collectPotion (player, potion){
+		var nombreObtenu = 1;
+		var itemObtenu = 'Potion'
 		 potion.disableBody(true, true);
 		 potion += 1;
+	 };
+	 
+//coffre
+
+coffre = this.physics.add.image(100,150,'coffre');
+this.physics.add.overlap(player,coffre,collectCoffre, null, this);
+
+ function collectCoffre (player, coffre){
+	 var nombreObtenu = 3;
+	 var itemObtenu = 'Pieges'
+		 coffre.disableBody(true, true);
+		 boom += 3;
+	 };
+	 
+
+//coffre 2
+
+coffre2 = this.physics.add.image(700,150,'coffre');
+this.physics.add.overlap(player,coffre2,collectCoffreEncore, null, this);
+
+ function collectCoffreEncore (player, coffre2){
+	 var nombreObtenu = 1;
+	 var itemObtenu = 'Bouclier'
+		 coffre2.disableBody(true, true);
+		 utiliserBouclier = true;
+		 
 	 };
 	 
 						
@@ -345,9 +418,21 @@ function update(){
 		player.setVelocityY(200);
 	}
 	
+	
+	//annonce
+	
+	if (nombreObtenu >> 1){
+	fond = this.physics.add.image(-40,70,'menu');
+	fond.setScrollFactor(0);
+	
+	annonceTexte = this.add.text(0, 60, 'Vous obtenez ' + nombreObtenu + ' ' + itemObtenu, {fontSize: '20px', fill:'#FFF'});
+	annonceTexte.setScrollFactor(0);
+	}
 
 	
 	//Bouclier 
+	
+	if (utiliserBouclier == true){
 		if(keyR.isDown){
 		bouclier = this.physics.add.staticGroup({
     key: 'bouclier',
@@ -366,9 +451,12 @@ function update(){
 	 };
 	 
 	}
+}
 	
 	
 	//Poser Bombes
+	
+	if(boom >=1){
 	
 	if(keyE.isDown){
 		boom -= 1;
@@ -418,7 +506,7 @@ function update(){
 	 };
 		}
 		
-	 };
+	}};
 	 
 	 function monstrebombs2 (monster2, poserBombs){
 		poserBombs.disableBody(true, true);
@@ -455,6 +543,12 @@ function update(){
 		vieJoueur += 1;
 	}	
 	
+	//Passer Text
+	
+	if(keyY.isDown){
+		coffreTexte.destroy();
+	}	
+	
 		//Inventaire
 		
 	
@@ -463,7 +557,7 @@ function update(){
 
 	id_menu = this.physics.add.image(290, 300, "menu2");
 	id_menu.setScrollFactor(0);
-	boomText = this.add.text(110, 110, 'Bombes = ' + boom, {fontSize: '20px', fill:'#FFF'});
+	boomText = this.add.text(110, 110, 'Pieges = ' + boom, {fontSize: '20px', fill:'#FFF'});
 	boomText.setScrollFactor(0);
 	potionTexte = this.add.text(110, 190, 'Potion = ' + potion, {fontSize: '20px', fill:'#FFF'});
 	potionTexte.setScrollFactor(0);
