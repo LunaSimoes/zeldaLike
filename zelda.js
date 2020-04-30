@@ -97,7 +97,7 @@ function preload(){
 }
 
 function create(){
-	this.add.image(2150,2150,'background');
+	this.add.image(1000,1000,'background');
 	
 	platforms = this.physics.add.staticGroup();
 	
@@ -254,6 +254,7 @@ function create(){
 	
 	monster.children.iterate(function (child){
 		child.setBounceY(1);
+		child.setBounceX(1);
 	});
 	
 	this.physics.add.collider(monster, platforms);
@@ -303,10 +304,12 @@ function create(){
 	
 	monster2.children.iterate(function (child){
 		child.setBounceX(1);
+		child.setBounceY(1);
 	});
 	
 	this.physics.add.collider(monster2, platforms);
 	this.physics.add.collider(monster2, obstacle);
+	this.physics.add.collider(monster2, bouclier);
 	this.physics.add.collider(monster2, player, hitmonster2, null, this);
 	
 		//toucher
@@ -365,7 +368,7 @@ this.physics.add.overlap(player,coffre,collectCoffre, null, this);
 
 //coffre 2  DEBLOQUER BOUCLIER
 
-coffre2 = this.physics.add.image(650,150,'coffre');
+coffre2 = this.physics.add.image(675,150,'coffre');
 this.physics.add.overlap(player,coffre2,collectCoffreEncore, null, this);
 
  function collectCoffreEncore (player, coffre2){
@@ -378,7 +381,7 @@ this.physics.add.overlap(player,coffre2,collectCoffreEncore, null, this);
 	 };
 	 
 	 
-//coffre 3  DEBLOQUER BOUCLIER
+//coffre 3  encore plus de pieges !
 
 coffre3 = this.physics.add.image(1700,1800,'coffre');
 this.physics.add.overlap(player,coffre3,collectCoffreEncore2, null, this);
