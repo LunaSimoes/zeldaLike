@@ -2,8 +2,8 @@ let gameScene = new Phaser.Scene('Zelda');
 
 var config = {
 	type: Phaser.AUTO,
-	width: 2000,
-	height: 2000,
+	width: 800,
+	height: 600,
 	scene: gameScene,
 	physics: {
         default: 'arcade',
@@ -155,13 +155,31 @@ function create(){
 	
 	platforms.create(700,1900,'forest');
 
+	platforms.create(2390,350,'rangearbre');
+	platforms.create(1430,1150,'forest');
+	platforms.create(1250,1150,'forest');
+	
+	platforms.create(1350,1400,'forest');
+	platforms.create(1430,1450,'forest');
+	platforms.create(2400,1500,'rangearbre');
+	
+	platforms.create(1150,1500,'arbre');
+	platforms.create(1100,1550,'arbre');
+	
 	platforms.create(940,330,'murabre');
 	platforms.create(960,950,'murabre');
 	platforms.create(2000,350,'murabre');
 	platforms.create(2000,990,'murabre');
 	platforms.create(2000,1650,'murabre');
 	
+	platforms.create(1370,450,'forest');
+	platforms.create(1330,550,'forest');
+	platforms.create(1300,650,'forest');
+	platforms.create(1330,750,'forest');
+	platforms.create(1480,850,'forest');
+	
 	platforms.create(990,2000,'rangearbre');
+
 	
 	
 	//obstacle à bouger pour accéder à la potion
@@ -192,8 +210,8 @@ function create(){
 	player.setCollideWorldBounds(false);
 	this.physics.add.collider(player,platforms);
 	this.physics.add.collider(player,obstacle);
-	//this.cameras.main.startFollow(player);
-	//this.cameras.main.setBounds(0, 0, 2000, 2000);
+	this.cameras.main.startFollow(player);
+	this.cameras.main.setBounds(0, 0, 2000, 2000);
 	
 	cursor = this.input.keyboard.createCursorKeys();
 	
@@ -358,6 +376,94 @@ this.physics.add.overlap(player,coffre2,collectCoffreEncore, null, this);
 		 utiliserBouclier = true;
 		 
 	 };
+	 
+	 
+//coffre 3  DEBLOQUER BOUCLIER
+
+coffre3 = this.physics.add.image(1700,1800,'coffre');
+this.physics.add.overlap(player,coffre3,collectCoffreEncore2, null, this);
+
+ function collectCoffreEncore2 (player, coffre3){
+	annonceTexte.destroy();
+	annonceTexte = this.add.text(10, 60, 'Vous obtenez 5 pieges.', {fontSize: '16px', fill:'#FFF'});
+	annonceTexte.setScrollFactor(0);
+		 coffre3.disableBody(true, true);
+		 boom += 5;
+		 
+	 };
+	 
+	 
+//Ruby 
+
+rubyPerdu = this.physics.add.group({
+		key: 'ruby',
+		repeat: 0,
+		setXY: {
+		x: 1100,
+		y: 150,
+		}
+	})
+	
+		this.physics.add.overlap(player,rubyPerdu,collectrubyPerdu, null, this);
+		
+		function collectrubyPerdu (player, rubyPerdu){
+		 rubyPerdu.disableBody(true, true);
+		 delay: 500;
+		 ruby += 1;
+		annonceTexte.destroy();
+		annonceTexte = this.add.text(10, 60, 'Vous obtenez 1 ruby.', {fontSize: '16px', fill:'#FFF'});
+		annonceTexte.setScrollFactor(0);
+	 };
+	 
+	 
+//Piege A l'abandon 
+
+PiegeAbandonne = this.physics.add.group({
+		key: 'bombs',
+		repeat: 0,
+		setXY: {
+		x: 500,
+		y: 1800,
+		}
+	})
+	
+		this.physics.add.overlap(player,PiegeAbandonne,collectPiegeAbandonne, null, this);
+		
+		function collectPiegeAbandonne (player, PiegeAbandonne){
+		 PiegeAbandonne.disableBody(true, true);
+		 delay: 500;
+		 boom += 1;
+		annonceTexte.destroy();
+		annonceTexte = this.add.text(10, 60, 'Vous obtenez 1 piege.', {fontSize: '16px', fill:'#FFF'});
+		annonceTexte.setScrollFactor(0);
+	 };
+	 
+	 
+//Piege A l'abandon 
+
+PiegeAbandonne2 = this.physics.add.group({
+		key: 'bombs',
+		repeat: 2,
+		setXY: {
+		x: 1800,
+		y: 480,
+			stepX: -490,
+			stepY: 400,
+		}
+	})
+	
+		this.physics.add.overlap(player,PiegeAbandonne2,collectPiegeAbandonne2, null, this);
+		
+		function collectPiegeAbandonne2 (player, PiegeAbandonne2){
+		 PiegeAbandonne2.disableBody(true, true);
+		 delay: 500;
+		 boom += 1;
+		annonceTexte.destroy();
+		annonceTexte = this.add.text(10, 60, 'Vous obtenez 1 piege.', {fontSize: '16px', fill:'#FFF'});
+		annonceTexte.setScrollFactor(0);
+	 };
+	 
+	 
 	 
 						
 //Anims
