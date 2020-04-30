@@ -131,19 +131,6 @@ function create(){
 		child.setBounceY(1);
 	});
 
-//Interface
-
-		//UI
-		
-	UI = this.add.image(0,20,'menu');
-	UI.setScrollFactor(0);
-		
-	vieText = this.add.text(10, 10, 'Vie = ' + vieJoueur, {fontSize: '20px', fill:'#FFF'});
-	vieText.setScrollFactor(0);
-	
-	ouvrirText = this.add.text(150, 10, 'Inventaire [M]', {fontSize: '20px', fill:'#FFF'});
-	ouvrirText.setScrollFactor(0);
-
 	
 
 //Player
@@ -202,6 +189,9 @@ function create(){
 	function hitmonster (player, monster){
 		
 		vieJoueur = vieJoueur - 1;
+		vieText.destroy();
+		vieText = this.add.text(10, 10, 'Vie = ' + vieJoueur, {fontSize: '20px', fill:'#FFF'});
+		vieText.setScrollFactor(0);
 		delay = 500;
 		
 		if (vieJoueur == 0) {
@@ -245,6 +235,9 @@ function create(){
 	function hitmonster2 (player, monster2){
 		
 		vieJoueur = vieJoueur - 1;
+		vieText.destroy();
+		vieText = this.add.text(10, 10, 'Vie = ' + vieJoueur, {fontSize: '20px', fill:'#FFF'});
+		vieText.setScrollFactor(0);
 		delay = 500;
 		
 		if (vieJoueur == 0) {
@@ -306,7 +299,18 @@ function create(){
 	});
 	
 	
+	//Interface
+
+		//UI
+		
+	UI = this.add.image(0,20,'menu');
+	UI.setScrollFactor(0);
+		
+	vieText = this.add.text(10, 10, 'Vie = ' + vieJoueur, {fontSize: '20px', fill:'#FFF'});
+	vieText.setScrollFactor(0);
 	
+	ouvrirText = this.add.text(150, 10, 'Inventaire [M]', {fontSize: '20px', fill:'#FFF'});
+	ouvrirText.setScrollFactor(0);
 
 }
 
@@ -394,7 +398,6 @@ function update(){
 	
 		if (vieMonstre == 0) {
 			monster.destroy();
-			detroyObstacle == detroyObstacle -1;
 			ruby = this.physics.add.group({
 		key: 'ruby',
 		repeat: 0,
@@ -425,7 +428,6 @@ function update(){
 		//MONSTRE 2 MEURT	
 		if (vieMonstre2 == 0) {
 			monster2.destroy();
-			detroyObstacle == detroyObstacle -1;
 			ruby = this.physics.add.group({
 		key: 'ruby',
 		repeat: 0,
