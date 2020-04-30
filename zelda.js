@@ -326,6 +326,9 @@ function create(){
 		var itemObtenu = 'Potion'
 		 potion.disableBody(true, true);
 		 potion += 1;
+		annonceTexte.destroy();
+		annonceTexte = this.add.text(10, 60, 'Vous obtenez 1 potion.', {fontSize: '16px', fill:'#FFF'});
+		annonceTexte.setScrollFactor(0);
 	 };
 	 
 //coffre
@@ -334,21 +337,23 @@ coffre = this.physics.add.image(100,150,'coffre');
 this.physics.add.overlap(player,coffre,collectCoffre, null, this);
 
  function collectCoffre (player, coffre){
-	 var nombreObtenu = 3;
-	 var itemObtenu = 'Pieges'
+	annonceTexte.destroy();
+	annonceTexte = this.add.text(10, 60, 'Vous obtenez 3 pieges. Appuyer sur E.', {fontSize: '16px', fill:'#FFF'});
+	annonceTexte.setScrollFactor(0);
 		 coffre.disableBody(true, true);
 		 boom += 3;
 	 };
 	 
 
-//coffre 2
+//coffre 2  DEBLOQUER BOUCLIER
 
-coffre2 = this.physics.add.image(700,150,'coffre');
+coffre2 = this.physics.add.image(650,150,'coffre');
 this.physics.add.overlap(player,coffre2,collectCoffreEncore, null, this);
 
  function collectCoffreEncore (player, coffre2){
-	 var nombreObtenu = 1;
-	 var itemObtenu = 'Bouclier'
+	annonceTexte.destroy();
+	annonceTexte = this.add.text(10, 60, 'Vous obtenez un bouclier. Appuyer sur R.', {fontSize: '16px', fill:'#FFF'});
+	annonceTexte.setScrollFactor(0);
 		 coffre2.disableBody(true, true);
 		 utiliserBouclier = true;
 		 
@@ -384,6 +389,12 @@ this.physics.add.overlap(player,coffre2,collectCoffreEncore, null, this);
 	
 	ouvrirText = this.add.text(150, 10, 'Inventaire [M]', {fontSize: '20px', fill:'#FFF'});
 	ouvrirText.setScrollFactor(0);
+	
+	fond = this.physics.add.image(-40,70,'menu');
+	fond.setScrollFactor(0);
+	
+	annonceTexte = this.add.text(10, 60, ' ', {fontSize: '20px', fill:'#FFF'});
+	annonceTexte.setScrollFactor(0);
 
 }
 
@@ -416,17 +427,6 @@ function update(){
 	
 	if(cursor.down.isDown){
 		player.setVelocityY(200);
-	}
-	
-	
-	//annonce
-	
-	if (nombreObtenu >> 1){
-	fond = this.physics.add.image(-40,70,'menu');
-	fond.setScrollFactor(0);
-	
-	annonceTexte = this.add.text(0, 60, 'Vous obtenez ' + nombreObtenu + ' ' + itemObtenu, {fontSize: '20px', fill:'#FFF'});
-	annonceTexte.setScrollFactor(0);
 	}
 
 	
@@ -503,6 +503,9 @@ function update(){
 		 ruby.disableBody(true, true);
 		 delay: 500;
 		 ruby += 1;
+		annonceTexte.destroy();
+		annonceTexte = this.add.text(10, 60, 'Vous obtenez 1 ruby.', {fontSize: '16px', fill:'#FFF'});
+		annonceTexte.setScrollFactor(0);
 	 };
 		}
 		
@@ -532,6 +535,9 @@ function update(){
 		 ruby.disableBody(true, true);
 		 delay: 500;
 		 ruby += 1;
+		annonceTexte.destroy();
+		annonceTexte = this.add.text(10, 60, 'Vous obtenez 1 ruby.', {fontSize: '16px', fill:'#FFF'});
+		annonceTexte.setScrollFactor(0);
 	 };
 		
 	 };
@@ -557,13 +563,23 @@ function update(){
 
 	id_menu = this.physics.add.image(290, 300, "menu2");
 	id_menu.setScrollFactor(0);
-	boomText = this.add.text(110, 110, 'Pieges = ' + boom, {fontSize: '20px', fill:'#FFF'});
+	
+	boomText = this.add.text(170, 110, 'Pieges = ' + boom, {fontSize: '20px', fill:'#FFF'});
 	boomText.setScrollFactor(0);
-	potionTexte = this.add.text(110, 190, 'Potion = ' + potion, {fontSize: '20px', fill:'#FFF'});
+	iconePiege = this.add.image(130,120,'bombs');
+	UI.setScrollFactor(0);
+	
+	potionTexte = this.add.text(170, 190, 'Potion = ' + potion, {fontSize: '20px', fill:'#FFF'});
 	potionTexte.setScrollFactor(0);
-	rubyTexte = this.add.text(110, 280, 'Ruby = ' + ruby, {fontSize: '20px', fill:'#FFF'});
+	iconePotion = this.add.image(130,190,'potion');
+	UI.setScrollFactor(0);
+	
+	rubyTexte = this.add.text(170, 280, 'Ruby = ' + ruby, {fontSize: '20px', fill:'#FFF'});
 	rubyTexte.setScrollFactor(0);
-	quitterTexte = this.add.text(110, 500, 'Quitter [P]', {fontSize: '20px', fill:'#FFF'});
+	iconeRuby = this.add.image(130,280,'ruby');
+	UI.setScrollFactor(0);
+	
+	quitterTexte = this.add.text(320, 400, 'Quitter [P]', {fontSize: '20px', fill:'#FFF'});
 	quitterTexte.setScrollFactor(0);
 }
 
@@ -571,10 +587,18 @@ function update(){
 		//Inventory
 
 	id_menu.visible = false;
+	
 	boomText.destroy();
+	iconePiege.destroy();
+	
 	potionTexte.destroy();
+	iconePotion.destroy();
+	
 	rubyTexte.destroy();
+	iconeRuby.destroy();
+	
 	quitterTexte.destroy();
+	
 	
 	};
 	
